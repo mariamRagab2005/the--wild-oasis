@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
+import { createPortal } from "react-dom";
 import { HiXMark } from "react-icons/hi2";
 import styled from "styled-components";
 
@@ -52,8 +53,10 @@ const Button = styled.button`
   }
 `;
 
+
+
 function Model({ children, onClose }) {
-  return (
+  return  createPortal(
 
     <Overlay>
       <StyledModal>
@@ -62,7 +65,8 @@ function Model({ children, onClose }) {
         </Button>
         <div> {children}</div>
       </StyledModal>
-    </Overlay>
+    </Overlay>,
+    document.body
   );
 }
 
