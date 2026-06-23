@@ -27,6 +27,7 @@ const Container =styled.div`
          <Header />
          <Sidebar/>
          <Main>
+          <h1>Welcome to the Wild Oasis</h1>
           <Container>
             <Outlet />
           </Container>
