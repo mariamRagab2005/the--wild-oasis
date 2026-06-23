@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
+import { cloneElement, createContext, useContext, useState } from "react";
 import { createPortal } from "react-dom";
 import { HiXMark } from "react-icons/hi2";
 import styled from "styled-components";
@@ -52,22 +53,52 @@ const Button = styled.button`
     color: var(--color-grey-500);
   }
 `;
+// We can use context to share the state of the modal across the app to do compound components like Modal.Open and Modal.Window
+const ModelContext = createContext();
+
+function Model ({ children }) {
+  const [openName, setOpenName] = useState("");
+  const open = setOpenName;
+  const close = () => setOpenName("");
+
+  return (
+    <ModelContext.Provider value={{ openName, open, close }}>
+      {children}
+    </ModelContext.Provider>
+  );
+}
 
 
 
-function Model({ children, onClose }) {
+function Open({ children, opens:opensWindowName }) {
+  const{open} = useContext(ModelContext);
+// We can use cloneElement to add the onClick event to the children of the Open component. This way we can trigger the opening of the modal when the children are clicked.
+  return cloneElement(children, {
+    onClick: () => open(opensWindowName),
+  });
+}
+
+
+function Window({ children , name }) {
+  const { openName , close } = useContext(ModelContext);
+  if(name !== openName) return null;
+ 
   return  createPortal(
 
     <Overlay>
       <StyledModal>
-        <Button onClick={onClose}>
+        <Button onClick={close}>
           <HiXMark />
         </Button>
-        <div> {children}</div>
+        <div> { cloneElement(children, {
+    onCloseModal:close,
+  })}</div>
       </StyledModal>
     </Overlay>,
     document.body
   );
 }
-
+// We can use compound components to create a more flexible and reusable modal component. The Open component will be used to trigger the opening of the modal, and the Window component will be used to display the content of the modal. The Model component will manage the state of the modal and provide the necessary functions to open and close it.
+Model.Open = Open;
+Model.Window = Window;
 export default Model;

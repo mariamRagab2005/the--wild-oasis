@@ -3,6 +3,7 @@ import GlobalStyles from "./styles/GlobalStyles";
 import Dashboard from "./pages/Dashboard";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Bookings from "./pages/Bookings";
+
 import Cabins from "./pages/Cabins";
 import Users from "./pages/Users";
 import Settings from "./pages/Settings";
@@ -12,7 +13,7 @@ import PageNotFound from "./pages/PageNotFound";
 import AppLayout from "./ui/AppLayout";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {  Toaster } from "react-hot-toast";
-
+import ProtectedRoute from "./ui/ProtectedRoute";
 
 const  queryClient=  new QueryClient (
   {
@@ -34,7 +35,13 @@ function App() {
   <GlobalStyles />
   <BrowserRouter>
     <Routes>
-      <Route element={<AppLayout />}>
+      <Route element={
+        
+          <ProtectedRoute>
+          <AppLayout />
+          </ProtectedRoute>
+        
+        }>
         <Route index element={<Navigate replace to="dashboard" />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="bookings" element={<Bookings />} />
@@ -42,9 +49,10 @@ function App() {
         <Route path="users" element={<Users />} />
         <Route path="settings" element={<Settings />} />
         <Route path="account" element={<Account />} />
+       
       </Route>
-
       <Route path="login" element={<Login />} />
+     
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   </BrowserRouter>
